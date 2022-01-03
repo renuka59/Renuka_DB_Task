@@ -9,12 +9,12 @@ public class profileTest extends BaseTest {
 	@Test(priority=1)
 	public void verifySearchResultsAccoundingToJobKeyword()throws InterruptedException
 	{
-		//searchPage.displaySearchResultsForTheJobKeyword("India");
+		searchPage.displaySearchResultsForTheJobKeyword("India");
 	}
 	@Test(priority=2)
 	public void verifyApplyJobByRegisteringUserAndUploadingCv() throws InterruptedException, AWTException
 	{
-		//registerUser.RegisterProfileAndApllyJobViaJobApplication(filePath,"Decem1234567$","Germany","Internationally across the DB Group","No");
+		registerUser.RegisterProfileAndApllyJobViaJobApplication(filePath,"Decem1234567$", "Internationally across the DB Group","No", "No", "50000");
 	}
 	@Test(priority=3)
 	public void verifyStatusOfJobApplication()
@@ -24,7 +24,7 @@ public class profileTest extends BaseTest {
 	@Test(priority=4)
 	public void verifyApplyJobByExistingUser() throws InterruptedException, AWTException
 	{
-		applyJob.applyJobThroughExistingProfile("Africa");
+		profilePage.applyJobThroughExistingProfile("india");
 	}
 
 }

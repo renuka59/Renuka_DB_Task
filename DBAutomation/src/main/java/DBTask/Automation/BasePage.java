@@ -1,8 +1,4 @@
 package DBTask.Automation;
-
-
-
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -57,7 +53,7 @@ public class BasePage {
 	protected void waitForPageToLoad(int seconds) {
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(seconds));
 	}
-    public void selectFromDropDown(By element, String value) {
+	protected void selectFromDropDown(By element, String value) {
         Select select = new Select(find(element));
         select.selectByVisibleText(value);
         
@@ -71,20 +67,17 @@ public class BasePage {
             e.printStackTrace();
         }
     }
-   public void PrintLog(String text) {
-	   
-	   
-	   System.out.println(text);
-	   
-   }
-   public void SelectFilterInputFromDropdown(int dropBoxIndex, By locator)throws InterruptedException{
+
+    protected void SelectFilterInputFromDropdown(int dropBoxIndex, By locator)throws InterruptedException{
 		
 		WebElement Field = find(locator);
 		Field.click();
 		Select DropBox = new Select(Field);
 		DropBox.selectByIndex(dropBoxIndex);
 	}
-   public void fileUploadFromComputer(String fileName) throws AWTException
+   
+   // Method for uploading file from the given path
+    protected void fileUploadFromComputer(String fileName) throws AWTException
    {
 	   File file = new File(fileName);
 	   StringSelection stringSelection= new StringSelection(file.getAbsolutePath());
@@ -128,20 +121,19 @@ public class BasePage {
 		 
 		//Press Enter key to close the Goto window and Upload window
 		 
-
 		robot.keyPress(KeyEvent.VK_ENTER);
 		 
 		robot.keyRelease(KeyEvent.VK_ENTER);
 		 
 		robot.delay(500);
 
-		
 		robot.keyPress(KeyEvent.VK_ENTER);
 		 
 		robot.keyRelease(KeyEvent.VK_ENTER);
 		
    }
-   public void sendKeys(String element,By locator)
+    
+    protected void sendKeys(String element,By locator)
    {
 	   find(locator).sendKeys(element);
    }

@@ -62,12 +62,14 @@ public class SearchPage extends BasePage {
 		CheckDisplayedElements();
 
 	}
-	public void searchJobsWithJobKeyword(String keyWord)
+	protected void searchJobsWithJobKeyword(String keyWord)
 	{
 		SearchKeyWord = keyWord;
 		find(searchTabLocator).sendKeys(SearchKeyWord);
 		click(enterSearchButton);
 	}
+	
+	
 	// method to check and assert the presence of filter or keywords.
 	private void CheckEachDisplayedJob(String ActualString) {
 		
@@ -87,7 +89,6 @@ public class SearchPage extends BasePage {
 			Assert.assertTrue(ActualString.contains(SearchKeyWord));
 			
 		}
-		
 	}
 		
 
@@ -100,17 +101,15 @@ public class SearchPage extends BasePage {
 			// Checks and asserts for the keyword
 			CheckEachDisplayedJob(ActualString);
 		}	
-		// TBD: To be extended for all the pages.
+		// To be extended for all the pages.
 	}
 	
 	// clicks the corresponding job displayed in the first row.
-	public void clickDisplayedJobsInFirstRow()
+	protected void clickDisplayedJobsInFirstRow()
 	{
 		click(FirstRowLocator);
 	}
 	
-	
-
 	
 	// Method to feed the given text input for the given locator
 	private void SetFilterInput(String text, By locator)throws InterruptedException{

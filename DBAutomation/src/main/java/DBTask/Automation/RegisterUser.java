@@ -1,21 +1,14 @@
 package DBTask.Automation;
 
-import static org.testng.Assert.assertEquals;
-
 import java.awt.AWTException;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 public class RegisterUser extends SearchPage {
 
 	private final By passWordFiledLocator = By.id("1176");
 	private final By confirmPassWordLocator = By.id("1177");
-	// private final By mandatoryCountryLocator = By.id("ui-widget_152359");
-	// private final By countryFieldLocator = By.id("152359-search__field");
-	// private final By countryFieldButton = By.id("li25510");
 	private final By selectCheckBox = By.id("751");
 	private final By selectMandatoryOption = By.id("752");
 	private final By matchPositionlocator = By.id("120930");
@@ -28,23 +21,23 @@ public class RegisterUser extends SearchPage {
 	private final By workPermitGermanyLocator = By.id("162002");
 	private final By nationalityField = By.xpath("//*[@class='select2-selection__rendered']");
 	private final By indianNationalityFieldLocator = By.id("li55814");
-	private final By saveAndContinueButton1 =  By.id("162008-save");
-	private final By salaryExpectationLocator =  By.id("90-1");
-	private final By universityLocator =   By.id("select2-90-2-container");
-	private final By andereUniversityLocator =   By.id("li11776243");
-	private final By saveAndContinueButton2 =  By.id("91-save");
-	private final By finalApplyButton =  By.id("1410-save");
-	private final By confirmationText1=  By.xpath("//*[@class='content-thank-title']/h2");
-	private final By confirmationText2=  By.xpath("//*[@class='content-thank-title']/h3");
+	private final By saveAndContinueButton1 = By.id("162008-save");
+	private final By salaryExpectationLocator = By.id("90-1");
+	private final By universityLocator = By.id("select2-90-2-container");
+	private final By andereUniversityLocator = By.id("li11776243");
+	private final By saveAndContinueButton2 = By.id("91-save");
+	private final By finalApplyButton = By.id("1410-save");
+	private final By confirmationText1 = By.xpath("//*[@class='content-thank-title']/h2");
+	private final By confirmationText2 = By.xpath("//*[@class='content-thank-title']/h3");
 	private final By applyJob = By.xpath("//*[@class='jobDetailDetails']/div[2]/a");
 
-	
 	public String filePath;
 	// resources
 	private String passWordText;
-	private String countryName;
 	private String dataShareOptions;
 	private String willingnessForOtherPositions;
+	private String hasWorkPermit;
+	private String expectedSalary;
 
 	public RegisterUser(WebDriver driver) {
 		super(driver);
@@ -52,7 +45,7 @@ public class RegisterUser extends SearchPage {
 
 	/**************************************************************************
 	 * Test Objective: Apply for jobs by registering an user and uploading CV
-	 * Precondition : Jobs page is opened and User is not registered
+	 * Precondition : Jobs page is opened and User is not registered 
 	 * Step 1 : select any displayed Job and apply 
 	 * step 2 : upload CV from computer and ensure that uploaded file is correctly displayed 
 	 * step 3 : fill the user mandatory details and check that the job is applied successfully.
@@ -73,19 +66,22 @@ public class RegisterUser extends SearchPage {
 	 */
 
 	public void RegisterProfileAndApllyJobViaJobApplication(String filePathStr, String passWordStr,
-			String countryNameStr, String shareOptionsStr, String willingnessStr)
+			 String shareOptionsStr, String willingnessStr, String workPermitStr, String SalaryStr)
 			throws InterruptedException, AWTException {
 
 		// copy inputs
 		this.passWordText = passWordStr;
-		this.countryName = countryNameStr;
 		this.dataShareOptions = shareOptionsStr;
 		this.willingnessForOtherPositions = willingnessStr;
 		this.filePath = filePathStr;
+		this.hasWorkPermit = workPermitStr;
+		this.expectedSalary = SalaryStr;
 
 		// Click on the job that is displayed on the first row.
 		clickDisplayedJobsInFirstRow();
+		
 		click(applyJob);
+		
 		// Uploads the CV file from computer and verifies the name of the uploaded file
 		UploadResumefromComputer();
 		setWait(10);
@@ -94,42 +90,33 @@ public class RegisterUser extends SearchPage {
 		EnterUserProfileDetails();
 	}
 
-	/**************************************************************************
-	 * Create a new profile by uploading the CV and applies for a job via Search
-	 * Page
-	 * 
-	 * @param filePathStr
-	 * @param passWordStr
-	 * @param countryNameStr
-	 * @param shareOptionsStr
-	 * @param willingnessStr
-	 * @throws InterruptedException
-	 * @throws AWTException
-	 */
-	public void RegisterProfileAndApllyJobViaSearchPage(String filePathStr, String passWordStr, String countryNameStr,
+	/* Create a new profile by uploading the CV and applies for a job via Search Page */
+	public void RegisterProfileAndApllyJobViaSearchPage(String filePathStr, String passWordStr,
 			String shareOptionsStr, String willingnessStr) throws InterruptedException, AWTException {
 
 		// copy inputs
 		this.passWordText = passWordStr;
-		this.countryName = countryNameStr;
 		this.dataShareOptions = shareOptionsStr;
 		this.willingnessForOtherPositions = willingnessStr;
 		this.filePath = filePathStr;
-
-		// Uploads the CV file from computer and verifies the name of the uploaded file
+		
 		// Click Upload CV/resume to create a profile
 		click(resumeUploadLocator);
 
 		setWait(10);
-
+		
+		// Uploads the CV file from computer and verifies the name of the uploaded file
 		UploadResumefromComputer();
 
 		// Fills the mandatory input details for creating a user profile.
 		EnterUserProfileDetails();
+		
+		// verifies whether user profile created
+		CheckIsUserProfileCreated();
 	}
 
 	// Uploads resume from computer
-	// verifies the name of the uploaded the file
+	// verifies the name of the uploaded file
 	private void UploadResumefromComputer() throws InterruptedException, AWTException {
 
 		// Click Upload from computer button
@@ -177,7 +164,8 @@ public class RegisterUser extends SearchPage {
 		}
 		return ret;
 	}
-
+	
+	// method for extracting filename from the path
 	private String extractFileNameFromFilePath() {
 		String Text[] = filePath.split("/");
 		String fileName = Text[Text.length - 1];
@@ -194,70 +182,54 @@ public class RegisterUser extends SearchPage {
 		find(confirmPassWordLocator).sendKeys(passWordText);
 		setWait(10);
 
-		// Countries of Interest
-//		WebElement Country = find(mandatoryCountryLocator);
-//		click(Country);
-
-		// find(countryFieldLocator).sendKeys(countryName);
-
-//		click(countryFieldButton);
-
 		click(selectCheckBox);
 
 		// converts input text to index and selects the Datashare
 		SelectFilterInputFromDropdown(convertDataShareTextToIndex(dataShareOptions), selectMandatoryOption);
 		setWait(5);
 		// converts input text to index and selects the suitablePosition
-		SelectFilterInputFromDropdown(convertYesOrNoTextToIndex(willingnessForOtherPositions),
-				matchPositionlocator);
+		SelectFilterInputFromDropdown(convertYesOrNoTextToIndex(willingnessForOtherPositions), matchPositionlocator);
 		setWait(5);
 
 		// Click save profile button.
 		click(saveProfileButton);
-		
-		//Nationality
-				click(nationalityField);
-				//nationalityField).sendKeys("Indian");
-				click(indianNationalityFieldLocator);
-				
-		//WorkPermit
-				SelectFilterInputFromDropdown(convertYesOrNoTextToIndex("NO"),workPermitGermanyLocator);
-			//	driver.findElement(By.id("162002_23450")).click(); // YES
-				// 162002_23451 // value =23451 //No
-				
-				setWait(5);
-				
-				click(saveAndContinueButton1);
-				//SalaryExpectation
-				
-				sendKeys("50000",salaryExpectationLocator);
-				
-				//University
-				
-				click(universityLocator);
-				sendKeys("andere",universityLocator);
-				// SRH Berlin University of Applied Sciences
-				click(andereUniversityLocator);
-				
-				//andere //li11776243
 
-				click(saveAndContinueButton2);
-				
-				//apply
-				click(finalApplyButton);
-				
-				//Thank you
-				//for your application!
-				
-				String finalConfirmationText1=find(confirmationText1).getText();
-				String finalConfirmationText2=find(confirmationText2).getText();
-				
-				Assert.assertEquals("Thank you", finalConfirmationText1);
-				Assert.assertEquals("for your application!", finalConfirmationText2);
-				
-				
-				
-				
+		// Nationality
+		click(nationalityField);
+		// nationalityField).sendKeys("Indian");
+		click(indianNationalityFieldLocator);
+
+		// WorkPermit
+		SelectFilterInputFromDropdown(convertYesOrNoTextToIndex(hasWorkPermit), workPermitGermanyLocator);
+
+		setWait(5);
+
+		click(saveAndContinueButton1);
+		
+		// SalaryExpectation
+		sendKeys(expectedSalary, salaryExpectationLocator);
+
+		// University
+		click(universityLocator);
+		sendKeys("andere", universityLocator);
+		// SRH Berlin University of Applied Sciences
+		click(andereUniversityLocator);
+
+		click(saveAndContinueButton2);
+
+		// apply
+		click(finalApplyButton);
+	}
+	
+	// Method for verifying the job application
+	private void CheckIsUserProfileCreated() throws InterruptedException {
+		
+		String finalConfirmationText1 = find(confirmationText1).getText();
+		String finalConfirmationText2 = find(confirmationText2).getText();
+
+		Assert.assertEquals("Thank you", finalConfirmationText1);
+		Assert.assertEquals("for your application!", finalConfirmationText2);
+		
 	}
 
 }
